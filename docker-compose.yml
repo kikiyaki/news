@@ -1,0 +1,45 @@
+version: '3.3'
+services:
+    nginx:
+        image: nginx:latest
+        container_name: news-nginx
+        ports:
+            - "80:80"
+        volumes:
+            - ./container/nginx/core:/etc/nginx/conf.d
+            - ./application:/application
+            - ./container/nginx/logs:/var/log/nginx/
+            - ./container/nginx/html:/usr/share/nginx/html/
+        links:
+            - php-fpm
+
+    pgsql:
+        image: postgres:latest
+        container_name: news-pgsql
+        restart: always
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_DB=news
+            - POSTGRES_USER=news
+            - POSTGRES_PASSWORD=news123
+        volumes:
+            - ./container/pgsql:/var/lib/postgresql
+
+    php-fpm:
+        build: ./container/php-fpm
+        container_name: news-php-fpm
+        working_dir: /application
+        volumes:
+            - ./application:/application
+        links:
+            - pgsql
+
+    adminer:
+        image: adminer
+        container_name: news-adminer
+        restart: always
+        ports:
+            - 8085:8080
+        links:
+            - pgsql
