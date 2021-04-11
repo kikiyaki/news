@@ -26,6 +26,6 @@ class m210411_184825_create_news_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%news}}');
+        $this->dropTable('news');
     }
 }
