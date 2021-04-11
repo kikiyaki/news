@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\News;
 use yii\rest\ActiveController;
 
 /**
@@ -12,4 +13,9 @@ use yii\rest\ActiveController;
 class NewsController extends ActiveController
 {
     public $modelClass = 'app\models\News';
+
+    public function actionIndex()
+    {
+        return News::find()->all();
+    }
 }

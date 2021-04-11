@@ -51,7 +51,11 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'news'],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'news',
+                    'only' => ['index', 'view', 'delete', 'options']
+                ],
             ],
         ],
     ],
