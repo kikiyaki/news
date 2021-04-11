@@ -1,36 +1,35 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace app\commands;
 
+use app\models\News;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
 /**
- * This command echoes the first argument that you have entered.
+ * Parse news api, save news to the db
  *
- * This command is provided as an example for you to learn how to create console commands.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @author Kirill Yakovlev
  */
 class ParseNewsController extends Controller
 {
     /**
-     * This command echoes what you have entered as the message.
-     * @param string $message the message to be echoed.
      * @return int Exit code
      */
     public function actionIndex()
     {
         $url = 'https://api.corr.life/public/sections/5e01383bf4352e43d960b258/posts?after=1617621518036';
         $newsData = file_get_contents($url);
-        $newsData = json_decode($newsData);
-        var_dump($newsData);
+        $newsData = json_decode($newsData, true);
+        foreach ($newsData['data'] as $news) {
+            $news = new News();
+            $news->news_id = $news['_id'];
+            $news->title = $news['title'];
+            $news->url = "https://life.ru/p/$news[index]";
+            $news->img_url = $news['cover']['url'];
+            $news->save();
+        }
+
         return ExitCode::OK;
     }
 }
