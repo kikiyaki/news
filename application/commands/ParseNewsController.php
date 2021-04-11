@@ -21,13 +21,17 @@ class ParseNewsController extends Controller
         $url = 'https://api.corr.life/public/sections/5e01383bf4352e43d960b258/posts?after=1617621518036';
         $newsData = file_get_contents($url);
         $newsData = json_decode($newsData, true);
-        foreach ($newsData['data'] as $news) {
-            $news = new News();
-            $news->news_id = $news['_id'];
-            $news->title = $news['title'];
-            $news->url = "https://life.ru/p/$news[index]";
-            $news->img_url = $news['cover']['url'];
-            $news->save();
+        foreach ($newsData['data'] as $key => $news) {
+            if ($key >= 20) {
+                break;
+            }
+
+            $createdNews = new News();
+            $createdNews->news_id = $news['_id'];
+            $createdNews->title = $news['title'];
+            $createdNews->url = "https://life.ru/p/$news[index]";
+            $createdNews->img_url = $news['cover']['url'];
+            $createdNews->save();
         }
 
         return ExitCode::OK;
