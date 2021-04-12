@@ -17,8 +17,8 @@ class NewsController extends ActiveController
 
     public function actionIndex(Request $request)
     {
-        $limit = (int) $request->get('limit', null);
-        $offset = (int) $request->get('offset', 0);
+        $limit = $request->get('limit', null);
+        $offset = $request->get('offset', 0);
         return News::find()
             ->limit($limit)
             ->offset($offset)
