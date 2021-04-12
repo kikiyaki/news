@@ -2,6 +2,8 @@
 
 namespace app\commands;
 
+use app\lib\Parsing\LifeParsedNews;
+use app\lib\Parsing\ParsedNews;
 use app\models\News;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -18,22 +20,29 @@ class ParseNewsController extends Controller
      */
     public function actionIndex()
     {
-        $url = 'https://api.corr.life/public/sections/5e01383bf4352e43d960b258/posts?after=1617621518036';
-        $newsData = file_get_contents($url);
-        $newsData = json_decode($newsData, true);
-        foreach ($newsData['data'] as $key => $news) {
-            if ($key >= 20) {
-                break;
-            }
-
-            $createdNews = new News();
-            $createdNews->news_id = $news['_id'];
-            $createdNews->title = $news['title'];
-            $createdNews->url = "https://life.ru/p/$news[index]";
-            $createdNews->img_url = $news['cover']['url'];
-            $createdNews->save();
-        }
+        $lifeParsedNews = new LifeParsedNews(20);
+        $this->parse($lifeParsedNews);
 
         return ExitCode::OK;
+
+    }
+
+    /**
+     * Write parsed news to the db
+     *
+     * @param ParsedNews $parsedNews
+     */
+    private function parse(ParsedNews $parsedNews)
+    {
+        $sourceName = $parsedNews->sourceName();
+        foreach ($parsedNews->newsList() as $news) {
+            $createdNews = new News();
+            $createdNews->news_id = $news['news_id'];
+            $createdNews->title = $news['title'];
+            $createdNews->url = $news['url'];
+            $createdNews->img_url = $news['img_url'];
+            $createdNews->source = $sourceName;
+            $createdNews->save();
+        }
     }
 }
