@@ -4,7 +4,7 @@ services:
         image: nginx:latest
         container_name: news-nginx
         ports:
-            - "80:80"
+            - "8080:80"
         volumes:
             - ./container/nginx/core:/etc/nginx/conf.d
             - ./application:/application
