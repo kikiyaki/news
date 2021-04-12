@@ -11,6 +11,9 @@ use yii\console\ExitCode;
 /**
  * Parse news api, save news to the db
  *
+ * Run command line:
+ * php yii parse-news
+ *
  * @author Kirill Yakovlev
  */
 class ParseNewsController extends Controller
