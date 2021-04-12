@@ -1,2 +1,4 @@
+.idea/
+
 application/vendor/*
 container/nginx/logs/*
